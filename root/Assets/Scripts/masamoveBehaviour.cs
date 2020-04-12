@@ -36,6 +36,7 @@ public class masamoveBehaviour : MonoBehaviour
         {
             isRun = false;
         }
+        //動き
         if (Input.GetButton("Horizontal") || Input.GetButton("Vertical"))
         {
             
