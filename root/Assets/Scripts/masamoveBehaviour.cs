@@ -5,91 +5,92 @@ using UnityEngine;
 
 public class masamoveBehaviour : MonoBehaviour
 {
-    public float speed = 0.01f;
-
-
+    public float speed = 3.5f;
+    public float playerTimeScale=1.0f;
+    [SerializeField] public int PlayerHP=300;
 
     public Animator anim;
     public Rigidbody rb;
     private bool isRun=false;
-    private float targetAngle;
-    private float startAngle;
-    private float startTime;
-    private float turnTime =0.5f;
+    private bool slowSwitch=false;
+// スローモーションの持ち時間
+    private float slowTimeRemain=1000;
 
     //GameObject camtarget= GameObject.Find("cameraTarget");
     // Start is called before the first frame update
     void Start()
     {
-        //GameObject shadow = GameObject.Find("Shadow");
+        // アニメーターの取得
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
-
+            anim.speed=1f;
+            Time.timeScale=1f;
+            playerTimeScale=1f;
 
 
     }
 
-    // Update is called once per frame
-
-
     void Update()
     {
-        /*キャラクターのカメラターゲットの座標をキャラクターと合わせる
-        Vector3 position = transform.position;
-        camtarget.transform.position　= position;*/
+        
         //シフトキーを押しているかどうか？走っているかどうかのフラグセット
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             isRun = true;
+            speed=5.0f;
         }
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             isRun = false;
+            speed=3.5f;
         }
-    /*
-        
-        //バイオハザード風の動き
-        if (Input.GetButton("Horizontal") || Input.GetButton("Vertical"))
+        // Spaceキーでスローモーションモードへ突入
+        if (Input.GetKey(KeyCode.Space)&&slowSwitch==false)
         {
-            
-            if (isRun==true){ 
-                anim.SetBool("Run", true);
-            }
-            else
-            {
-                anim.SetBool("Walk", true);
-                anim.SetBool("Run", false);
-            }
-            
-            transform.rotation = Quaternion.LookRotation(transform.position +
-            (Vector3.right * Input.GetAxisRaw("Horizontal")) +
-            (Vector3.forward * Input.GetAxisRaw("Vertical"))
-            - transform.position);
-        
+            slowSwitch=true;                //スローモーション状態をTrueに
+            anim.speed=10;                  //アニメーションの再生スピードを10倍
+            Time.fixedDeltaTime=0.0002f;    //当たり判定を100倍の頻度で判定
+            Time.timeScale=0.1f;            //世界のタイムスケールを10分の1に
+            playerTimeScale=10f;            //プレイヤーのタイムスケールを10倍に
+
+        } 
+
+        if (slowSwitch==true){
+            slowTimeRemain-=1f;             //スローモーション時間を減らしていく
         }
-        else
-        {
-            anim.SetBool("Walk", false);
+        if (slowTimeRemain<0){              //スローモーション時間切れ
+            Time.fixedDeltaTime=0.02f;      //以下元の世界の状態へ
+            anim.speed=1f;
+            Time.timeScale=1f;
+            playerTimeScale=1f;
+            slowSwitch=false;
         }
-    */
-        //前後移動
+    
+        //前後移動ロジック
         if (Input.GetButton("Vertical"))
         {
-            
+            //アニメーションによる移動をせずにTransformで移動
+            //transform.position += transform.forward*speed*playerTimeScale* Time.deltaTime;
             if (isRun==true){ 
+
+                 //Run状態へ
                 anim.SetBool("Run", true);
             }
             else
             {
+                //Walk状態へ
                 anim.SetBool("Walk", true);
                 anim.SetBool("Run", false);
             }
         }
         else
         {
+            //Idle状態へ
             anim.SetBool("Walk", false);
         }
-        //Quarternionをつかったローテート masa
+        
+
+        //左回転
         if (Input.GetKey(KeyCode.A))
         {
             // x軸を軸にして毎秒-2度、回転させるQuaternionを作成（変数をrotとする）
@@ -99,6 +100,7 @@ public class masamoveBehaviour : MonoBehaviour
             // 合成して、自身に設定
             this.transform.rotation = q * rot;
         } 
+        //右回転
         if (Input.GetKey(KeyCode.D))
         {
             // x軸を軸にして毎秒2度、回転させるQuaternionを作成（変数をrotとする）
@@ -108,68 +110,17 @@ public class masamoveBehaviour : MonoBehaviour
             // 合成して、自身に設定
             this.transform.rotation = q * rot;
         } 
-    /* GetButtonをつかった前後移動バイオ風 アニメーションだけで移動
-        
-        if (Input.GetButton("Horizontal") || Input.GetButton("Vertical"))
-        {
+        if (PlayerHP<=0){
+            GameObject ragdoll = (GameObject)Resources.Load("PlayerRagdoll");
+
+
+            Instantiate(ragdoll, this.transform.position, Quaternion.identity);
             
-            if (isRun==true){ 
-                anim.SetBool("Run", true);
-
-            }
-            else
-            {
-                anim.SetBool("Walk", true);
-                anim.SetBool("Run", false);
-
-            }
-            
-                transform.rotation = Quaternion.LookRotation(transform.position +
-            (Vector3.right * Input.GetAxisRaw("Horizontal")) +
-            (Vector3.forward * Input.GetAxisRaw("Vertical"))
-            - transform.position);
-        
-        }
-        else
-        {
-            anim.SetBool("Walk", false);
+            Destroy(this.gameObject);
 
         }
-        */
-
-        /* Transformをつかった前後移動        
-        
-        if (Input.GetKey(KeyCode.W)){
-            transform.position+=transform.forward*speed*Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.S)){
-            transform.position-=transform.forward*speed*Time.deltaTime;
-        }
-        */
-
-        
-        /* Shige Rotate Logic
-        if (Input.GetKey(KeyCode.A)){
-            startTime= Time.time;
-            startAngle= transform.rotation.y;
-            targetAngle = transform.rotation.y -90.0f;
-        }
-        if (Input.GetKey(KeyCode.D)){
-            startTime= Time.time;
-            startAngle= transform.rotation.y;
-            targetAngle = transform.rotation.y +90.0f;
-        }
-
-        if ( targetAngle!=transform.rotation.y)
-        {
-            Vector3 V = new Vector3(transform.rotation.x,transform.rotation.y,transform.rotation.z);
-            V.y = Mathf.Lerp(startAngle,targetAngle,(Time.time-startTime)/turnTime);
-            transform.eulerAngles = V;
-        }
-        */
-
-
     }
 
+    
 
 }
