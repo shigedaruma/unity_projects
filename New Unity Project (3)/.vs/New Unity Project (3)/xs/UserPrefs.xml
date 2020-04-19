@@ -1,0 +1,35 @@
+﻿<Properties StartupConfiguration="{2AAD6523-CBC8-2D5D-878E-DFA5C27CDDFD}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/masamoveBehaviour.cs">
+    <Files>
+      <File FileName="Assets/masamoveBehaviour.cs" Line="41" Column="10" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="New Unity Project (3)" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="3rdPerson+Fly" expanded="True">
+                <Node name="Animations" expanded="True" />
+                <Node name="Scripts" expanded="True">
+                  <Node name="PlayerScripts" expanded="True" />
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value>moveZ</Value>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="f45d5701-8e62-40b4-bb06-aad124c0ed84" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
